@@ -1,6 +1,7 @@
 /** Functions */
 /** Sizes */
 /** Colors */
+/** Extra */
 * {
   box-sizing: border-box; }
 
@@ -41,5 +42,65 @@ input:disabled {
 
 input[type="range"] {
   height: 0; }
+
+.item-list {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  margin: 1.875rem auto; }
+  .item-list__item {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    padding: 0;
+    border-bottom: 1px solid #efefef;
+    transition: all 0.2s ease-in; }
+    .item-list__item > div {
+      flex: 1 1 0%; }
+    .item-list__item--title {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      padding: 0.625rem 0.3125rem;
+      font-size: 1.25rem; }
+      .item-list__item--title em {
+        margin-left: 0.625rem;
+        font-size: 0.625rem; }
+    .item-list__item--actions {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center; }
+      .item-list__item--actions button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 2rem;
+        height: 2rem;
+        margin-left: 0.3125rem;
+        padding: 0;
+        font-size: 0.875rem;
+        opacity: .5;
+        cursor: pointer;
+        transition: all 0.2s ease-in; }
+        .item-list__item--actions button:first-child {
+          margin-left: auto; }
+        .item-list__item--actions button.remove {
+          color: #fff;
+          background-color: #eb5757;
+          border: 0; }
+        .item-list__item--actions button.resume {
+          color: #fff;
+          background-color: #27ae60; }
+    .item-list__item--dates {
+      text-align: center;
+      font-size: 1.25rem;
+      color: cornflowerblue; }
+    .item-list__item:hover {
+      background-color: #fcfcfc;
+      border-bottom-color: #999; }
+      .item-list__item:hover button {
+        opacity: 1; }
 
 /*# sourceMappingURL=app.css.map */

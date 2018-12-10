@@ -1,10 +1,24 @@
 <div class="item-list__item">
-    <span class="item-list__item--title">
+    <div class="item-list__item--title">
         <strong>{item.title}</strong> <em>({item._id})</em>
-    </span>
-    <span class="item-list__item--dates">
+    </div>
+
+    <div class="item-list__item--dates">
         {timers}
-    </span>
+    </div>
+
+    <div class="item-list__item--actions">
+        <button
+            class="resume"
+            on:click="$resumeItem(item._id)">
+            ►
+        </button>
+        <button
+            class="remove"
+            on:click="$removeItem(item._id)">
+            x
+        </button>
+    </div>
 </div>
 
 <script>
@@ -19,16 +33,6 @@ export default {
 
             return `${timer.hours}:${timer.minutes}:${timer.seconds}`;
         }
-    },
-
-    methods: {
-        removeItem() {
-            const { items } = this.store.get();
-
-            this.store.set({
-                items: items.filter(i => i._id !== this.item.id)
-            });
-        }
-    },
+    }
 }
 </script>

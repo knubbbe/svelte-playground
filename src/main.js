@@ -1,9 +1,5 @@
 import App from './App.html';
-import { Store } from 'svelte/store.js';
-
-const store = new Store({
-	items: []
-});
+import store from './store.js';
 
 const app = new App({
 	target: document.body,
@@ -11,9 +7,8 @@ const app = new App({
 });
 
 if (window.localStorage.getItem('toggle:items')) {
-	store.set({ items: JSON.parse(window.localStorage.getItem('toggle:items')) });
+    const items = JSON.parse(window.localStorage.getItem('toggle:items'));
+
+	store.set({ items });
 }
-
-window.store = store;
-
 export default app;

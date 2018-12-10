@@ -21,11 +21,6 @@ const calculateSessionTime = (sessions) => {
     let delta = sessions.reduce((res, row) => {
         const diff = Math.abs(row.end - row.start) / 1000;
 
-        console.log(
-            res,
-            diff,
-            typeof res
-        );
         if (typeof res === 'number') {
             return res + diff;
         }
@@ -33,11 +28,15 @@ const calculateSessionTime = (sessions) => {
         return diff;
     });
 
+    if (typeof delta === 'object') {
+        delta = Math.abs(delta.end - delta.start) / 1000;
+    }
+
     const hours = Math.floor(delta / 3600) % 24;
     delta -= hours * 3600;
     const minutes = Math.floor(delta / 60) % 60;
     delta -= minutes * 60;
-    const seconds = delta % 60;
+    const seconds = parseInt(delta % 60);
 
     return {
         hours: (`${hours}`.length < 2) ? `0${hours}` : hours,
@@ -46,8 +45,15 @@ const calculateSessionTime = (sessions) => {
     }
 };
 
+
+const startTimer = (id) => {
+    console.log(this, id);
+
+};
+
 export {
     keyEvent,
     uniqueId,
-    calculateSessionTime
+    calculateSessionTime,
+    startTimer
 };

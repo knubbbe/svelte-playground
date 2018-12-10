@@ -20,7 +20,7 @@
     "dev": "run-p watch:scss start:dev autobuild",
     "start": "sirv public",
     "start:dev": "sirv public --dev",
-    "watch:scss": "node-sass -w  src/scss/app.scss --source-map true --output-style compress -o public/"
+    "watch:scss": "node-sass -w  src/scss/*.scss --source-map true --output-style compress -o public/"
   },
   "dependencies": {
     "date-fns": "^1.29.0"

@@ -1,0 +1,84 @@
+.item-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: rem-calc(30) auto;
+
+    &__item {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: rem-calc(20);
+        padding: 0;
+        border-bottom: 1px solid #efefef;
+        transition: all $transition-speed ease-in;
+
+        > div {
+            flex: 1 1 0%;
+        }
+
+        &--title {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            padding: rem-calc(10) rem-calc(5);
+            font-size: rem-calc(20);
+
+            em {
+                margin-left: rem-calc(10);
+                font-size: rem-calc(10);
+            }
+        }
+
+        &--actions {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+
+            button {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: rem-calc(32);
+                height: rem-calc(32);
+                margin-left: rem-calc(5);
+                padding: 0;
+                font-size: rem-calc(14);
+                opacity: .5;
+                cursor: pointer;
+                transition: all $transition-speed ease-in;
+
+                &:first-child {
+                    margin-left: auto;
+                }
+
+                &.remove {
+                    color: $light;
+                    background-color: $danger;
+                    border: 0;
+                }
+
+                &.resume {
+                    color: $light;
+                    background-color: $ok;
+                }
+            }
+        }
+
+        &--dates {
+            text-align: center;
+            font-size: rem-calc(20);
+            color: cornflowerblue;
+        }
+
+        &:hover {
+            background-color: #fcfcfc;
+            border-bottom-color: #999;
+
+            button {
+                opacity: 1;
+            }
+        }
+    }
+}

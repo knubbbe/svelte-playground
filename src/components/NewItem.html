@@ -11,7 +11,7 @@
 <script>
 import addMinutes from 'date-fns/add_minutes';
 import getTime from 'date-fns/get_time';
-import { keyEvent, uniqueId } from '../utils/helpers.js';
+import { keyEvent } from '../utils/helpers.js';
 
 export default {
     data: () => ({
@@ -24,31 +24,8 @@ export default {
             const value = input.value;
 
             if (value) {
-                const { items } = this.store.get();
-                const now = Date.now();
-                const randomNumber = Math.floor(Math.random() * 15) + 1;
-
-                const item = {
-                    _id: uniqueId(),
-                    title: value,
-                    sessions: [
-                        {
-                            start: now,
-                            end: getTime(addMinutes(now, randomNumber))
-                        },
-                        {
-                            start: getTime(addMinutes(now, randomNumber * 20)),
-                            end: getTime(addMinutes(now, randomNumber * 25))
-                        },
-                        {
-                            start: getTime(addMinutes(now, randomNumber * 120)),
-                            end: getTime(addMinutes(now, randomNumber * 125))
-                        }
-                    ]
-                };
-
-                this.store.set({
-                    items: [item].concat(items)
+                this.store.addItem({
+                    title: value
                 });
 
                 input.value = '';
