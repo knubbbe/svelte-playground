@@ -8,11 +8,19 @@
     </div>
 
     <div class="item-list__item--actions">
+        {#if item.interval === null}
         <button
             class="resume"
             on:click="$resumeItem(item._id)">
             ►
         </button>
+        {:else}
+        <button
+            class="pause"
+            on:click="$pauseItem(item._id)">
+            ||
+        </button>
+        {/if}
         <button
             class="remove"
             on:click="$removeItem(item._id)">

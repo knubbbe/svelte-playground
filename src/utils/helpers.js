@@ -45,15 +45,8 @@ const calculateSessionTime = (sessions) => {
     }
 };
 
-
-const startTimer = (id) => {
-    console.log(this, id);
-
-};
-
 export {
     keyEvent,
     uniqueId,
-    calculateSessionTime,
-    startTimer
+    calculateSessionTime
 };

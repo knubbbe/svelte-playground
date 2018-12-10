@@ -1,5 +1,5 @@
 import { Store } from 'svelte/store.js';
-import { startTimer, uniqueId } from './utils/helpers.js';
+import { uniqueId } from './utils/helpers.js';
 
 const storage = window.localStorage;
 
@@ -9,9 +9,6 @@ class ItemStore extends Store {
      * @param {Object} payload { title, ...rest }
      */
 	addItem({ title }) {
-        /** For testing purposes */
-        // const randomNumber = Math.floor(Math.random() * 15) + 1;
-
         const now = Date.now();
         const item = {
             _id: uniqueId(),
@@ -39,31 +36,58 @@ class ItemStore extends Store {
         this.set({ items });
     }
 
+    /**
+     * Resume an item timer
+     * @param {String} id
+     */
     resumeItem(id) {
-        const vm = this;
         const items = this.get().items.map(item => {
             if (item._id === id) {
                 item.sessions.push({
                     start: Date.now(),
                     end: Date.now()
-                })
+                });
+
+                item.interval = setInterval(() => this.updateEndTime(id), 1000);
             }
 
             return item;
         });
 
-        /** @todo make this efficient */
-        setInterval(() => {
-            const items = this.get().items.map(item => {
-                if (item._id === id) {
-                    item.sessions[item.sessions.length - 1].end = Date.now();
-                }
+        this.set({ items });
+    }
 
-                return item;
-            });
+    /**
+     * Pause an item timer
+     * @param {String} id
+     */
+    pauseItem(id) {
+        const items = this.get().items.map(item => {
+            if (item._id === id) {
+                clearInterval(item.interval);
+                item.interval = null;
+            }
 
-            this.set({ items });
-        }, 1000);
+            return item;
+        });
+
+        this.set({ items });
+    }
+
+    /**
+     * Updates end time on item to current unix time
+     * @param {String} id
+     */
+    updateEndTime(id) {
+        console.log('UPDATING', id);
+
+        const items = this.get().items.map(item => {
+            if (item._id === id) {
+                item.sessions[item.sessions.length - 1].end = Date.now();
+            }
+
+            return item;
+        });
 
         this.set({ items });
     }
