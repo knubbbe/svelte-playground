@@ -1,0 +1,34 @@
+<div class="item-list__item">
+    <span class="item-list__item--title">
+        <strong>{item.title}</strong> <em>({item._id})</em>
+    </span>
+    <span class="item-list__item--dates">
+        {timers}
+    </span>
+</div>
+
+<script>
+import { calculateSessionTime } from '../utils/helpers';
+
+export default {
+    props: ['item'],
+
+    computed: {
+        timers({ item }) {
+            const timer = calculateSessionTime(item.sessions);
+
+            return `${timer.hours}:${timer.minutes}:${timer.seconds}`;
+        }
+    },
+
+    methods: {
+        removeItem() {
+            const { items } = this.store.get();
+
+            this.store.set({
+                items: items.filter(i => i._id !== this.item.id)
+            });
+        }
+    },
+}
+</script>

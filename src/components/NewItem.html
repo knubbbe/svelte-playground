@@ -1,11 +1,17 @@
 <div class="new-item">
-    <input type="text" bind:value="title" ref:newItem>
-    <button on:click="addItem()">start</button>
+    <input
+        type="text"
+        bind:value="title"
+        on:enter="addItem()"
+        on:escape="reset()"
+        ref:newItem>
+    <button on:click="addItem()">add</button>
 </div>
 
 <script>
 import addMinutes from 'date-fns/add_minutes';
-import { uniqueId } from '../utils/helpers.js';
+import getTime from 'date-fns/get_time';
+import { keyEvent, uniqueId } from '../utils/helpers.js';
 
 export default {
     data: () => ({
@@ -19,17 +25,26 @@ export default {
 
             if (value) {
                 const { items } = this.store.get();
-                const now = new Date();
+                const now = Date.now();
                 const randomNumber = Math.floor(Math.random() * 15) + 1;
-
-                console.log(randomNumber);
-
 
                 const item = {
                     _id: uniqueId(),
                     title: value,
-                    start: now,
-                    end: addMinutes(now, randomNumber)
+                    sessions: [
+                        {
+                            start: now,
+                            end: getTime(addMinutes(now, randomNumber))
+                        },
+                        {
+                            start: getTime(addMinutes(now, randomNumber * 20)),
+                            end: getTime(addMinutes(now, randomNumber * 25))
+                        },
+                        {
+                            start: getTime(addMinutes(now, randomNumber * 120)),
+                            end: getTime(addMinutes(now, randomNumber * 125))
+                        }
+                    ]
                 };
 
                 this.store.set({
@@ -38,11 +53,16 @@ export default {
 
                 input.value = '';
             }
+        },
+
+        reset() {
+            this.refs.newItem.value = '';
         }
     },
 
-    helpers: {
-        addMinutes
+    events: {
+        enter: keyEvent(13),
+        escape: keyEvent(27)
     }
 }
 </script>
@@ -52,10 +72,11 @@ export default {
 
 .new-item {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
 
     input {
+        flex: 1;
         margin-right: rem-calc(5);
     }
 }

@@ -1,17 +1,7 @@
 <div class="item-list">
 {#if items.length}
     {#each items as item (item._id)}
-        <div class="item-list__item">
-            <span class="item-list__item--title">
-                {item.title}
-            </span>
-            <span class="item-list__item--dates">
-                {distanceInWordsStrict(item.start, item.end)}
-            </span>
-            <span class="item-list__item--id">
-                <em>({item._id})</em>
-            </span>
-        </div>
+        <Item item="{item}" on />
     {/each}
 {:else}
     <div class="empty">No items :(</div>
@@ -19,7 +9,7 @@
 </div>
 
 <script>
-import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
+import Item from './Item.html';
 
 export default {
     immutable: true,
@@ -40,20 +30,9 @@ export default {
         this.on('destroy', storeItems.cancel);
     },
 
-    methods: {
-        removeItem(id) {
-            const { items } = this.store.get();
-
-
-            this.store.set({
-                items: items.filter(i => i._id !== id)
-            });
-        }
-    },
-
-    helpers: {
-        distanceInWordsStrict
-    }
+    components: {
+		Item
+	}
 }
 </script>
 
@@ -66,7 +45,7 @@ export default {
     width: 100%;
     margin: rem-calc(30) auto;
 
-    &__item {
+    :global(&__item) {
         display: flex;
         flex-wrap: wrap;
         justify-content: space-between;
@@ -74,10 +53,11 @@ export default {
         margin-bottom: rem-calc(20);
         padding: 0;
         border-bottom: 1px solid #efefef;
-        transition: background-color .3s ease-in;
+        transition: all .3s ease-in;
 
         &:hover {
-            background-color: #efefef;
+            background-color: #fcfcfc;
+            border-bottom-color: #999;
         }
 
         &--title {
@@ -88,18 +68,14 @@ export default {
             font-size: rem-calc(20);
 
             em {
-                font-size: rem-calc(10)
+                margin-left: rem-calc(10);
+                font-size: rem-calc(10);
             }
         }
 
         &--dates {
             font-size: rem-calc(20);
             color: cornflowerblue;
-        }
-
-        &--id {
-            width: 100%;
-            font-size: rem-calc(10);
         }
     }
 }
