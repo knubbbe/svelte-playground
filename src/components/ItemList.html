@@ -1,0 +1,106 @@
+<div class="item-list">
+{#if items.length}
+    {#each items as item (item._id)}
+        <div class="item-list__item">
+            <span class="item-list__item--title">
+                {item.title}
+            </span>
+            <span class="item-list__item--dates">
+                {distanceInWordsStrict(item.start, item.end)}
+            </span>
+            <span class="item-list__item--id">
+                <em>({item._id})</em>
+            </span>
+        </div>
+    {/each}
+{:else}
+    <div class="empty">No items :(</div>
+{/if}
+</div>
+
+<script>
+import distanceInWordsStrict from 'date-fns/distance_in_words_strict';
+
+export default {
+    immutable: true,
+
+    data: () => ({
+        items: []
+    }),
+
+    oncreate() {
+        const storage = window.localStorage;
+
+        const storeItems = this.store.on('state', ({ current }) => {
+            storage.setItem('toggle:items', JSON.stringify(current.items));
+
+            this.set({ items: current.items });
+        });
+
+        this.on('destroy', storeItems.cancel);
+    },
+
+    methods: {
+        removeItem(id) {
+            const { items } = this.store.get();
+
+
+            this.store.set({
+                items: items.filter(i => i._id !== id)
+            });
+        }
+    },
+
+    helpers: {
+        distanceInWordsStrict
+    }
+}
+</script>
+
+<style type="text/scss">
+@import '../scss/app';
+
+.item-list {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: rem-calc(30) auto;
+
+    &__item {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: rem-calc(20);
+        padding: 0;
+        border-bottom: 1px solid #efefef;
+        transition: background-color .3s ease-in;
+
+        &:hover {
+            background-color: #efefef;
+        }
+
+        &--title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: rem-calc(10) rem-calc(5);
+            font-size: rem-calc(20);
+
+            em {
+                font-size: rem-calc(10)
+            }
+        }
+
+        &--dates {
+            font-size: rem-calc(20);
+            color: cornflowerblue;
+        }
+
+        &--id {
+            width: 100%;
+            font-size: rem-calc(10);
+        }
+    }
+}
+</style>

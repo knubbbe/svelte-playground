@@ -1,0 +1,62 @@
+<div class="new-item">
+    <input type="text" bind:value="title" ref:newItem>
+    <button on:click="addItem()">start</button>
+</div>
+
+<script>
+import addMinutes from 'date-fns/add_minutes';
+import { uniqueId } from '../utils/helpers.js';
+
+export default {
+    data: () => ({
+        title: ''
+    }),
+
+    methods: {
+        addItem() {
+            const input = this.refs.newItem;
+            const value = input.value;
+
+            if (value) {
+                const { items } = this.store.get();
+                const now = new Date();
+                const randomNumber = Math.floor(Math.random() * 15) + 1;
+
+                console.log(randomNumber);
+
+
+                const item = {
+                    _id: uniqueId(),
+                    title: value,
+                    start: now,
+                    end: addMinutes(now, randomNumber)
+                };
+
+                this.store.set({
+                    items: [item].concat(items)
+                });
+
+                input.value = '';
+            }
+        }
+    },
+
+    helpers: {
+        addMinutes
+    }
+}
+</script>
+
+<style type="text/scss">
+@import '../scss/app';
+
+.new-item {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    input {
+        margin-right: rem-calc(5);
+    }
+}
+</style>

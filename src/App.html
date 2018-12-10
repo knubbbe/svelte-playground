@@ -1,0 +1,30 @@
+<div class="app">
+	<NewItem />
+	<ItemList />
+</div>
+
+<script>
+import NewItem from './components/NewItem.html';
+import ItemList from './components/ItemList.html';
+
+export default {
+	components: {
+		NewItem,
+		ItemList
+	}
+}
+</script>
+
+<style type="text/scss">
+@import 'scss/app';
+
+.app {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	max-width: $content-width;
+	margin: 0 auto;
+	padding: rem-calc(10) rem-calc(20);
+	background-color: $background;
+}
+</style>
