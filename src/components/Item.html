@@ -1,4 +1,4 @@
-<div class="item-list__item">
+<div class="item-list__item {active ? 'active' : ''}">
     <div class="item-list__item--title">
         <strong>{item.title}</strong> <em>({item._id})</em>
     </div>
@@ -36,6 +36,10 @@ export default {
     props: ['item'],
 
     computed: {
+        active({ item }) {
+            return item.interval !== null;
+        },
+
         timers({ item }) {
             const timer = calculateSessionTime(item.sessions);
 

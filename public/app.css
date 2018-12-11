@@ -101,6 +101,8 @@ input[type="range"] {
       text-align: center;
       font-size: 1.25rem;
       color: cornflowerblue; }
+      .active .item-list__item--dates {
+        color: #27ae60; }
     .item-list__item:hover {
       background-color: #fcfcfc;
       border-bottom-color: #999; }
