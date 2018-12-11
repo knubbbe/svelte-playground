@@ -112,6 +112,26 @@ class ItemStore extends Store {
             Sentry.captureException(err);
         }
     }
+
+    checkForOnGoingSessions() {
+        const items = this.get().items
+            .filter(i => i.interval !== null)
+            .map(item => {
+                const lastEnd = item.sessions[item.sessions.length - 1].end;
+
+                item.sessions.push({
+                    start: lastEnd,
+                    end: Date.now()
+                });
+
+                clearInterval(item.interval);
+
+                this.resumeItem(item._id);
+
+                return item;
+            });
+
+    }
 }
 
 const store = new ItemStore({

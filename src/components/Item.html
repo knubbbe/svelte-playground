@@ -12,19 +12,19 @@
         <button
             class="resume"
             on:click="$resumeItem(item._id)">
-            ►
+            <span>►</span>
         </button>
         {:else}
         <button
             class="pause"
             on:click="$pauseItem(item._id)">
-            ||
+            <span>||</span>
         </button>
         {/if}
         <button
             class="remove"
             on:click="$removeItem(item._id)">
-            x
+            <span>x</span>
         </button>
     </div>
 </div>

@@ -3,5 +3,4 @@ node_modules
 public/bundle.*
 public/*.css
 public/*.css.map
-package-lock.json
 yarn.lock

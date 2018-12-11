@@ -16,6 +16,8 @@ try {
 
 		store.set({ items });
 	}
+
+	store.checkForOnGoingSessions();
 } catch(err) {
 	Sentry.captureException(err);
 }
