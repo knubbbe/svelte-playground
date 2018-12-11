@@ -1,3 +1,4 @@
+import * as Sentry from '@sentry/browser';
 import { Store } from 'svelte/store.js';
 import { uniqueId } from './utils/helpers.js';
 

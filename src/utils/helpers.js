@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/browser';
+
 const keyEvent = (code) => {
     return function(node, callback) {
         function keydownHandler (event) {
