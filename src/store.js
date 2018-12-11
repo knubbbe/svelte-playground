@@ -9,21 +9,25 @@ class ItemStore extends Store {
      * @param {Object} payload { title, ...rest }
      */
 	addItem({ title }) {
-        const now = Date.now();
-        const item = {
-            _id: uniqueId(),
-            title: title,
-            sessions: [
-                {
-                    start: now,
-                    end: now
-                }
-            ],
-            interval: null
-        };
-        const items = [item].concat(this.get().items);
+        try {
+            const now = Date.now();
+            const item = {
+                _id: uniqueId(),
+                title: title,
+                sessions: [
+                    {
+                        start: now,
+                        end: now
+                    }
+                ],
+                interval: null
+            };
+            const items = [item].concat(this.get().items);
 
-        this.set({ items });
+            this.set({ items });
+        } catch(err) {
+            Sentry.captureException(err);
+        }
 	}
 
     /**
@@ -31,9 +35,13 @@ class ItemStore extends Store {
      * @param {String} id
      */
 	removeItem(id) {
-        const items = this.get().items.filter(i => i._id !== id);
+        try {
+            const items = this.get().items.filter(i => i._id !== id);
 
-        this.set({ items });
+            this.set({ items });
+        } catch(err) {
+            Sentry.captureException(err);
+        }
     }
 
     /**
@@ -41,20 +49,24 @@ class ItemStore extends Store {
      * @param {String} id
      */
     resumeItem(id) {
-        const items = this.get().items.map(item => {
-            if (item._id === id) {
-                item.sessions.push({
-                    start: Date.now(),
-                    end: Date.now()
-                });
+        try {
+            const items = this.get().items.map(item => {
+                if (item._id === id) {
+                    item.sessions.push({
+                        start: Date.now(),
+                        end: Date.now()
+                    });
 
-                item.interval = setInterval(() => this.updateEndTime(id), 1000);
-            }
+                    item.interval = setInterval(() => this.updateEndTime(id), 1000);
+                }
 
-            return item;
-        });
+                return item;
+            });
 
-        this.set({ items });
+            this.set({ items });
+        } catch(err) {
+            Sentry.captureException(err);
+        }
     }
 
     /**
@@ -62,16 +74,16 @@ class ItemStore extends Store {
      * @param {String} id
      */
     pauseItem(id) {
-        const items = this.get().items.map(item => {
-            if (item._id === id) {
-                clearInterval(item.interval);
-                item.interval = null;
-            }
-
-            return item;
-        });
-
         try {
+            const items = this.get().items.map(item => {
+                if (item._id === id) {
+                    clearInterval(item.interval);
+                    item.interval = null;
+                }
+
+                return item;
+            });
+
             this.set({ items });
         } catch(err) {
             Sentry.captureException(err);
