@@ -23,6 +23,7 @@
     "watch:scss": "node-sass -w  src/scss/*.scss --source-map true --output-style compress -o public/"
   },
   "dependencies": {
+    "@sentry/browser": "^4.4.1",
     "date-fns": "^1.29.0"
   }
 }
