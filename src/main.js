@@ -10,9 +10,14 @@ const app = new App({
 	store
 });
 
-if (window.localStorage.getItem('toggle:items')) {
-    const items = JSON.parse(window.localStorage.getItem('toggle:items'));
+try {
+	if (window.localStorage.getItem('toggle:items')) {
+		const items = JSON.parse(window.localStorage.getItem('toggle:items'));
 
-	store.set({ items });
+		store.set({ items });
+	}
+} catch(err) {
+	Sentry.captureException(err);
 }
+
 export default app;

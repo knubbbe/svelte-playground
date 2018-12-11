@@ -71,7 +71,11 @@ class ItemStore extends Store {
             return item;
         });
 
-        this.set({ items });
+        try {
+            this.set({ items });
+        } catch(err) {
+            Sentry.captureException(err);
+        }
     }
 
     /**
@@ -81,15 +85,19 @@ class ItemStore extends Store {
     updateEndTime(id) {
         console.log('UPDATING', id);
 
-        const items = this.get().items.map(item => {
-            if (item._id === id) {
-                item.sessions[item.sessions.length - 1].end = Date.now();
-            }
+        try {
+            const items = this.get().items.map(item => {
+                if (item._id === id) {
+                    item.sessions[item.sessions.length - 1].end = Date.now();
+                }
 
-            return item;
-        });
+                return item;
+            });
 
-        this.set({ items });
+            this.set({ items });
+        } catch(err) {
+            Sentry.captureException(err);
+        }
     }
 }
 
@@ -98,7 +106,11 @@ const store = new ItemStore({
 });
 
 store.on('state', ({ current }) => {
-    storage.setItem('toggle:items', JSON.stringify(current.items));
+    try {
+        storage.setItem('toggle:items', JSON.stringify(current.items));
+    } catch(err) {
+        Sentry.captureException(err);
+    }
 });
 
 window.store = store; // For debugging
