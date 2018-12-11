@@ -68,6 +68,12 @@ class ItemStore extends Store {
         } catch(err) {
             Sentry.captureException(err);
         }
+
+        try {
+            items = 'test';
+        } catch(err) {
+            Sentry.captureException(err);
+        }
     }
 
     /**
