@@ -37,6 +37,7 @@ const calculateSessionTime = (sessions) => {
     const minutes = Math.floor(delta / 60) % 60;
     delta -= minutes * 60;
     const seconds = parseInt(delta % 60);
+    s
 
     return {
         hours: (`${hours}`.length < 2) ? `0${hours}` : hours,
