@@ -94,13 +94,14 @@ const redmine = async endpoint => {
         );
     } catch(err) {
         console.log('Redmine Request error:', err);
-
+        Sentry.captureException('Redmine search', err);
     }
 
     try {
         res = await req.json();
     } catch(err) {
         console.log('Redmine json error', err);
+        Sentry.captureException('Redmine search', err);
     }
 
     return res;
