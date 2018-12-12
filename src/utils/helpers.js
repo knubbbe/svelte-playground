@@ -1,5 +1,27 @@
 import * as Sentry from '@sentry/browser';
 
+const debounce = (func, wait, immediate) => {
+    let timeout;
+
+	return function() {
+		const context = this, args = arguments;
+		const later = () => {
+			timeout = null;
+			if (!immediate) {
+                func.apply(context, args);
+            }
+        };
+        const callNow = immediate && !timeout;
+
+		clearTimeout(timeout);
+		timeout = setTimeout(later, wait);
+
+        if (callNow) {
+            func.apply(context, args);
+        }
+	};
+};
+
 const keyEvent = (code) => {
     return function(node, callback) {
         function keydownHandler (event) {
@@ -51,8 +73,43 @@ const calculateSessionTime = (sessions) => {
     }
 };
 
+const redmine = async endpoint => {
+    const key = 'af52ac40cbfd3f8c1bf7cb9930fb10bfc3f4a0d2';
+    const apiKey = (endpoint.indexOf('?') !== -1)
+        ? `&key=${key}`
+        : `?key=${key}`;
+    let req, res;
+
+    try {
+        req = await fetch(
+            `https://redmine.westart.se${endpoint}${apiKey}`,
+            {
+                headers: {
+                    'Content-Type': 'application/json; charset=utf-8',
+                    // 'X-Redmine-API-Key': 'af52ac40cbfd3f8c1bf7cb9930fb10bfc3f4a0d2',
+                    // credentials: 'include',
+                    // mode: 'cors'
+                },
+            }
+        );
+    } catch(err) {
+        console.log('Redmine Request error:', err);
+
+    }
+
+    try {
+        res = await req.json();
+    } catch(err) {
+        console.log('Redmine json error', err);
+    }
+
+    return res;
+};
+
 export {
+    debounce,
     keyEvent,
     uniqueId,
-    calculateSessionTime
+    calculateSessionTime,
+    redmine
 };

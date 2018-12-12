@@ -1,4 +1,5 @@
 import svelte from 'rollup-plugin-svelte';
+import replace from 'rollup-plugin-replace';
 import { scss } from '@kazzkiq/svelte-preprocess-scss';
 import resolve from 'rollup-plugin-node-resolve';
 import commonjs from 'rollup-plugin-commonjs';
@@ -14,9 +15,16 @@ export default {
 		sourcemap: true,
 		format: 'iife',
 		name: 'app',
-		file: 'public/bundle.js'
+		file: 'public/bundle.js',
+		dir: 'public/',
+		experimentalCodeSplitting: true,
 	},
 	plugins: [
+		replace({
+			ENVIRONMENT: JSON.stringify(production ? 'production' : 'development'),
+			'process.env.NODE_ENV': JSON.stringify(production ? 'production' : 'development')
+		}),
+
 		!production && livereload(),
 		svelte({
 			// opt in to v3 behaviour today

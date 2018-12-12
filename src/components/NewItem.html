@@ -6,34 +6,129 @@
         on:escape="reset()"
         ref:newItem>
     <button on:click="addItem()">add</button>
+
+    {#if redmineItems.length && showRedmineItems}
+    <div class="redmine-list">
+        <div class="redmine-list__wrapper">
+            {#each redmineItems as item (item.id)}
+            <div class="redmine-list__item" on:click="setRedmineTask(item)">
+                <span>
+                    {item.title}
+                </span>
+            </div>
+            {/each}
+
+            {#if fetching}
+            <div class="redmine-list__loader">
+                hämtar...
+            </div>
+            {/if}
+        </div>
+    </div>
+    {/if}
 </div>
 
 <script>
 import addMinutes from 'date-fns/add_minutes';
 import getTime from 'date-fns/get_time';
-import { keyEvent } from '../utils/helpers.js';
+import { debounce, keyEvent, redmine } from '../utils/helpers.js';
 
 export default {
     data: () => ({
-        title: ''
+        title: '',
+        redmineTask: null,
+        redmineItems: [],
+        showRedmineItems: false,
+        fetching: false
     }),
 
-    methods: {
-        addItem() {
-            const input = this.refs.newItem;
-            const value = input.value;
+    oncreate() {
+        this.on('state', ({ changed, current, previous}) => {
+            console.log(changed, this.get().redmineTask);
+            if (changed.title && current.redmineTask === null) {
+                this.fetchRedmine();
+            }
+            if (current.redmineTask !== null) {
+                if (current.title === current.redmineTask.title) {
+                    this.hideRedmineList();
+                }
+            }
+        });
+    },
 
-            if (value) {
-                this.store.addItem({
-                    title: value
+    methods: {
+        fetchRedmine: debounce(async function() {
+            const { fetching, title } = this.get();
+            let res;
+
+            if (!fetching && title.length > 2) {
+                this.set({
+                    fetching: true
                 });
 
-                input.value = '';
+                console.log('fetching', title);
+
+                try {
+                    res = await redmine(`/search.json?q=${title}&limit=10`);
+                } catch(err) {
+                    console.log('redmine error', err);
+
+                    throw err;
+                }
+
+                this.set({
+                    redmineItems: res.results || [],
+                    showRedmineItems: true,
+                    fetching: false
+                });
+            }
+        }, 500),
+
+        clearRedmine() {
+            setTimeout(() => {
+                this.set({
+                    redmineItems: null,
+                    redmineItems: []
+                });
+            }, 200);
+        },
+
+        hideRedmineList() {
+            this.set({
+                showRedmineItems: false
+            });
+        },
+
+        addItem() {
+            const { title, redmineTask } = this.get();
+
+            if (title) {
+                this.store.addItem({
+                    title,
+                    redmine: redmineTask
+                });
+
+                this.reset();
             }
         },
 
+        setRedmineTask(item) {
+            console.log(item);
+
+            this.set({
+                title: item.title,
+                redmineTask: item,
+                showRedmineItems: false
+            });
+
+            this.refs.newItem.focus();
+        },
+
         reset() {
-            this.refs.newItem.value = '';
+            this.set({
+                title: '',
+                redmineTask: null
+            });
         }
     },
 
@@ -48,6 +143,7 @@ export default {
 @import '../scss/app';
 
 .new-item {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -55,6 +151,40 @@ export default {
     input {
         flex: 1;
         margin-right: rem-calc(5);
+    }
+
+    .redmine-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        max-width: 100%;
+        background-color: $background;
+        box-shadow: 1px 1px 10px rgba(0, 0, 0, .3);
+        transition: all .3s ease-in;
+        z-index: 99;
+
+        &__wrapper {
+            position: relative;
+        }
+
+        &__loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba($background, .7);
+        }
+
+        &__item {
+            padding: rem-calc(15) rem-calc(30);
+            border-bottom: 1px #ccc;
+            border-style: none none solid none;
+            cursor: pointer;
+        }
     }
 }
 </style>

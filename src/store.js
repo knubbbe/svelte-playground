@@ -1,20 +1,24 @@
 import * as Sentry from '@sentry/browser';
-import { Store } from 'svelte/store.js';
+// import { Store } from 'svelte/store.js';
+import SvelteDevStore from 'svelte-dev-store';
 import { uniqueId } from './utils/helpers.js';
 
 const storage = window.localStorage;
 
-class ItemStore extends Store {
+class ItemStore extends SvelteDevStore {
     /**
      * Add an item to ItemStore
      * @param {Object} payload { title, ...rest }
      */
-	addItem({ title }) {
+	addItem({ title, redmine }) {
+        console.log('ADD ITEM', title, redmine);
+
         try {
             const now = Date.now();
             const item = {
                 _id: uniqueId(),
-                title: title,
+                title,
+                redmine,
                 sessions: [
                     {
                         start: now,
